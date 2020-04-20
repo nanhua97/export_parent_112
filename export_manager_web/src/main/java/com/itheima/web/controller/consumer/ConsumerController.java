@@ -1,20 +1,25 @@
 package com.itheima.web.controller.consumer;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageInfo;
 import com.itheima.domain.consumer.ConsumerInfo;
 import com.itheima.domain.consumer.ConsumerTemplate;
 import com.itheima.service.consumer.ConsumerService;
 import com.itheima.web.base.BaseController;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.function.Consumer;
 
 @Controller
 @RequestMapping("/puhui/collector")
@@ -83,6 +88,50 @@ public class ConsumerController extends BaseController {
         }
 
         return "redirect:/puhui/collector/list.do";
+    }
+
+    @RequestMapping("/upload")
+    public String upload(){
+        return "consumer/collector/consumer-upload";
+    }
+
+    @RequestMapping("/add")
+    public String addTemplate(MultipartFile excel) throws IOException {
+        System.out.println("success");
+        List<ConsumerTemplate> consumerTemplates = EasyExcel.read(excel.getInputStream()).head(ConsumerTemplate.class).sheet().doReadSync();
+
+
+
+        ArrayList<ConsumerTemplate> defeats = new ArrayList<>();
+        ArrayList<ConsumerTemplate> success = new ArrayList<>();
+        ArrayList<ConsumerTemplate> updates = new ArrayList<>();
+
+        for (ConsumerTemplate consumerTemplate : consumerTemplates) {
+
+            ConsumerInfo consumerInfo = new ConsumerInfo();
+
+            BeanUtils.copyProperties(consumerTemplate,consumerInfo);
+
+            boolean gender = "男".equals(consumerTemplate.getGender())?true:false;
+
+            consumerInfo.setGender(gender);
+
+            Integer save = consumerService.save(consumerInfo);
+
+            if (save == 0){
+                updates.add(consumerTemplate);
+            }else if (save == 1){
+                success.add(consumerTemplate);
+            }else {
+                defeats.add(consumerTemplate);
+            }
+        }
+
+        request.setAttribute("success",success);
+        request.setAttribute("defeats",defeats);
+        request.setAttribute("updates",updates);
+
+        return "consumer/collector/consumer-after-upload";
     }
 
 

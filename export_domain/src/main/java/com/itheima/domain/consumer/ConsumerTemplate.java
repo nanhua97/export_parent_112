@@ -6,7 +6,7 @@ public class ConsumerTemplate {
     private String name;
 
     @ExcelProperty("性别")
-    private Boolean gender;
+    private String gender;
 
     @ExcelProperty("年龄")
     private Integer age;
@@ -31,11 +31,11 @@ public class ConsumerTemplate {
         this.name = name;
     }
 
-    public Boolean getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(Boolean gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -77,5 +77,18 @@ public class ConsumerTemplate {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "ConsumerTemplate{" +
+                "name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", age=" + age +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", prefessor='" + prefessor + '\'' +
+                ", message='" + message + '\'' +
+                '}';
     }
 }

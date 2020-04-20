@@ -14,19 +14,29 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
     <!-- 页面meta /-->
+    <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
 </head>
+<script>
+    function deleteById() {
+        var id = getCheckId();//动态获得当前选中的id值
+        if(id) {
+            if(confirm("你确认要删除此条记录吗？")) {
+                location.href="/company/delete.do?id="+id;
+            }
+        }else{
+            alert("请勾选待处理的记录，且每次只能勾选一个")
+        }
+    }
+</script>
 <body>
-<div id="frameContent">
-    <!-- 内容头部 -->
-    <section class="content-header" class="content-wrapper" style="margin-left:0px;">
+<div id="frameContent" class="content-wrapper" style="margin-left:0px;">
+    <section class="content-header">
         <h1>
-            客户管理
-            <small>客户表单</small>
+            普惠金融
+            <small>数据上传</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="all-admin-index.html"><i class="fa fa-dashboard"></i> 首页</a></li>
-            <li><a href="all-order-manage-list.html">客户管理</a></li>
-            <li class="active">客户表单</li>
         </ol>
     </section>
     <!-- 内容头部 /-->
@@ -34,66 +44,126 @@
     <!-- 正文区域 -->
     <section class="content">
 
-        <!--订单信息-->
-        <div class="panel panel-default">
-            <div class="panel-heading">客户信息</div>
-            <form id="editForm" action="/puhui/collector/edit.do" method="post">
-                <input type="hidden" name="id" value="${consumer.id}">
-                <div class="row data-type" style="margin: 0px">
-                    <div class="col-md-2 title">名字</div>
-                    <div class="col-md-4 data">
-                        <input type="text" class="form-control" placeholder="名字" name="name" value="${consumer.name}">
+        <!-- .box-body -->
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">列表</h3>
+            </div>
+
+            <div class="box-body">
+
+                <!-- 数据表格 -->
+                <div class="table-box">
+
+                    <div class="pull-left">
+                        上传成功记录,共${success.size()}条
                     </div>
 
-                    <div class="col-md-2 title">性别</div>
-                    <div class="col-md-4 data">
-                        <div class="form-group form-inline">
-                            <div class="radio"><label><input type="radio"  checked name="gender" value="true">男</label></div>
-                            <div class="radio"><label><input type="radio" name="gender" value="false">女</label></div>
-                        </div>
+                    <!--数据列表-->
+                    <table class="table table-bordered table-striped table-hover dataTable">
+                        <thead>
+                        <tr>
+                            <th class="sorting">名字</th>
+                            <th class="sorting">性别</th>
+                            <th class="sorting">年龄</th>
+                            <th class="sorting">电话</th>
+                            <th class="sorting">邮箱</th>
+                            <th class="sorting">职业</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach items="${success}" var="item">
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.gender}</td>
+                                <td>${item.age}</td>
+                                <td>${item.phone}</td>
+                                <td>${item.email}</td>
+                                <td>${item.prefessor}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                    <div class="pull-left">
+                        上传失败记录,共${defeats.size()}条
                     </div>
 
-                    <div class="col-md-2 title">年龄</div>
-                    <div class="col-md-4 data">
-                        <input type="text" class="form-control" placeholder="年龄" name="age" value="${consumer.age}">
+                    <!--数据列表-->
+                    <table class="table table-bordered table-striped table-hover dataTable">
+                        <thead>
+                        <tr>
+                            <th class="sorting">名字</th>
+                            <th class="sorting">性别</th>
+                            <th class="sorting">年龄</th>
+                            <th class="sorting">电话</th>
+                            <th class="sorting">邮箱</th>
+                            <th class="sorting">职业</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach items="${defeats}" var="item">
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.gender}</td>
+                                <td>${item.age}</td>
+                                <td>${item.phone}</td>
+                                <td>${item.email}</td>
+                                <td>${item.prefessor}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+
+                    <div class="pull-left">
+                        数据更新记录,共${update.size()}条
                     </div>
 
-                    <div class="col-md-2 title">电话</div>
-                    <div class="col-md-4 data">
-                        <input type="text" class="form-control" placeholder="电话" name="phone" value="${consumer.phone}">
-                    </div>
+                    <!--数据列表-->
+                    <table class="table table-bordered table-striped table-hover dataTable">
+                        <thead>
+                        <tr>
+                            <th class="" style="padding-right:0px;"></th>
+                            <th class="sorting">名字</th>
+                            <th class="sorting">性别</th>
+                            <th class="sorting">年龄</th>
+                            <th class="sorting">电话</th>
+                            <th class="sorting">邮箱</th>
+                            <th class="sorting">职业</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach items="${update}" var="item">
+                            <tr>
+                                <td><input name="ids" value="${item.id}" type="checkbox"></td>
+                                <td>${item.name}</td>
+                                <td>${item.gender}</td>
+                                <td>${item.age}</td>
+                                <td>${item.phone}</td>
+                                <td>${item.email}</td>
+                                <td>${item.prefessor}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
 
-                    <div class="col-md-2 title">邮箱</div>
-                    <div class="col-md-4 data">
-                        <input type="text" class="form-control" placeholder="邮箱" name="email" value="${consumer.email}">
-                    </div>
-
-                    <div class="col-md-2 title">职业</div>
-                    <div class="col-md-4 data">
-                        <input type="text" class="form-control" placeholder="职业" name="prefessor" value="${consumer.prefessor}">
-                    </div>
-
-                    <div class="col-md-2 title rowHeight2x">备注</div>
-                    <div class="col-md-10 data rowHeight2x">
-                        <textarea class="form-control" rows="3" name="message">${consumer.message}</textarea>
-                    </div>
                 </div>
-            </form>
-        </div>
-        <!--订单信息/-->
+            </div>
+            <!-- /.box-body -->
 
-        <!--工具栏-->
-        <div class="box-tools text-center">
-            <button type="button" onclick='document.getElementById("editForm").submit()' class="btn bg-maroon">保存</button>
-            <button type="button" class="btn bg-default" onclick="history.back(-1);">返回</button>
-        </div>
-        <!--工具栏/-->
+            <!-- .box-footer-->
+            <div class="box-footer">
 
+                <div class="box-footer">
+                    <jsp:include page="../../common/page.jsp">
+                        <jsp:param value="${ctx}/company/list.do" name="pageUrl"/>
+                    </jsp:include>
+                </div>
+                <!-- /.box-footer-->
+
+            </div>
+        </div>
     </section>
-    <!-- 正文区域 /-->
-
 </div>
-<!-- 内容区域 /-->
 </body>
 
 </html>

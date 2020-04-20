@@ -92,7 +92,7 @@
                             <tr>
                                 <td><input name="ids" value="${item.id}" type="checkbox"></td>
                                 <td>${item.name}</td>
-                                <td>${item.gender}</td>
+                                <td>${item.gender?"男":"女"}</td>
                                 <td>${item.age}</td>
                                 <td>${item.phone}</td>
                                 <td>${item.email}</td>
