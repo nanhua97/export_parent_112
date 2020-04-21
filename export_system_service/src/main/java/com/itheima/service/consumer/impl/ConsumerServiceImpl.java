@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,24 +39,21 @@ public class ConsumerServiceImpl implements ConsumerService {
         return consumerInfoPageInfo;
     }
 
+
+
     @Override
     public Integer save(ConsumerInfo consumerInfo) {
-        ConsumerInfoExample consumerInfoExample = new ConsumerInfoExample();
-        ConsumerInfoExample.Criteria criteria = consumerInfoExample.createCriteria();
-        criteria.andPhoneEqualTo(consumerInfo.getPhone());
-        List<ConsumerInfo> consumerInfos = consumerDao.selectByExample(consumerInfoExample);
 
-        if (StringUtils.isEmpty(consumerInfo.getPhone()) || StringUtils.isEmpty(consumerInfo.getName())){
-            return -1;
-        }
-
-        if (consumerInfos.size() >0 ){
-            return 0;
-        }else {
-            consumerInfo.setId(UUID.randomUUID().toString());
+        try {
             consumerInfo.setStatus(1);
+            consumerInfo.setCreateTime(new Date());
+            consumerInfo.setUpdateTime(new Date());
+            consumerInfo.setId(UUID.randomUUID().toString());
             int insert = consumerDao.insert(consumerInfo);
             return insert;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
 
     }
@@ -64,10 +62,11 @@ public class ConsumerServiceImpl implements ConsumerService {
     public Integer update(ConsumerInfo consumerInfo) {
         Integer status = 0;
         try {
-            status = consumerDao.insert(consumerInfo);
+            consumerInfo.setUpdateTime(new Date());
+            consumerInfo.setStatus(1);
+            status = consumerDao.updateByPrimaryKey(consumerInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            status = -1;
         }
         return status;
     }
@@ -79,7 +78,6 @@ public class ConsumerServiceImpl implements ConsumerService {
             status = consumerDao.deleteByPrimaryKey(id);
         } catch (Exception e) {
             e.printStackTrace();
-            status = -1;
         }
         return status;
     }
@@ -93,6 +91,57 @@ public class ConsumerServiceImpl implements ConsumerService {
             e.printStackTrace();
         }
         return consumerInfo;
+    }
+
+    @Override
+    public List<ConsumerInfo> selectByPhone(String phone) {
+        try {
+            ConsumerInfoExample consumerInfoExample = new ConsumerInfoExample();
+            ConsumerInfoExample.Criteria criteria = consumerInfoExample.createCriteria();
+            criteria.andPhoneEqualTo(phone);
+            return consumerDao.selectByExample(consumerInfoExample);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public void updateStatus(String id, Integer status) {
+
+        try {
+            ConsumerInfo consumerInfo = consumerDao.selectByPrimaryKey(id);
+
+            consumerInfo.setStatus(status);
+
+            consumerDao.updateByPrimaryKey(consumerInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public PageInfo<ConsumerInfo> selectByKw(Integer status, Integer page, Integer size,String kw) {
+
+        PageHelper.startPage(page,size);
+
+        ConsumerInfoExample consumerInfoExample = new ConsumerInfoExample();
+
+        ConsumerInfoExample.Criteria criteria = consumerInfoExample.createCriteria();
+
+        criteria.andStatusEqualTo(status);
+
+        criteria.andNameLike(kw);
+
+        criteria.andPhoneLike(kw);
+
+        List<ConsumerInfo> consumerInfos = consumerDao.selectByExample(consumerInfoExample);
+
+        PageInfo<ConsumerInfo> consumerInfoPageInfo = new PageInfo<>(consumerInfos);
+
+        return consumerInfoPageInfo;
+
     }
 
 }

@@ -15,4 +15,10 @@ public interface ConsumerService {
     Integer delete(String id);
 
     ConsumerInfo selectById(String id);
+
+    List<ConsumerInfo> selectByPhone(String phone);
+
+    void updateStatus(String id, Integer status);
+
+    PageInfo<ConsumerInfo> selectByKw(Integer status, Integer page, Integer size,String kw);
 }

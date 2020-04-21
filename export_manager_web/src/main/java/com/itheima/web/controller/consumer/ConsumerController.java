@@ -31,6 +31,7 @@ public class ConsumerController extends BaseController {
     public String list(@RequestParam(defaultValue = "1") Integer status , @RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size){
         PageInfo<ConsumerInfo> consumerInfoPageInfo = consumerService.selectByStatus(status, page, size);
         request.setAttribute("page" , consumerInfoPageInfo);
+        request.setAttribute("kw",null);
         return "consumer/collector/consumer-list";
     }
 
@@ -62,18 +63,21 @@ public class ConsumerController extends BaseController {
 
     @RequestMapping(value = "/edit")
     public String edit(ConsumerInfo consumerInfo){
-        System.out.println(consumerInfo);
         if(StringUtils.isEmpty(consumerInfo.getId())){//判断id是否存在
             consumerInfo.setCreateBy(loginUser.getId());
-            consumerInfo.setCreateTime(new Date());
             consumerInfo.setUpdateBy(loginUser.getId());
-            consumerInfo.setUpdateTime(new Date());
             //调用service开始保存数据
             consumerService.save(consumerInfo);
         }else{
-            consumerInfo.setUpdateBy(loginUser.getId());
-            consumerInfo.setUpdateTime(new Date());
-            consumerService.update(consumerInfo);
+            if (!StringUtils.isEmpty(consumerInfo.getPhone())){
+                List<ConsumerInfo> consumerInfos = consumerService.selectByPhone(consumerInfo.getPhone());
+                if (consumerInfo!=null && consumerInfos.size()>0){
+                    consumerInfo.setId(consumerInfos.get(0).getId());
+                    consumerInfo.setUpdateBy(loginUser.getId());
+                    consumerService.update(consumerInfo);
+                }
+            }
+
         }
         return "redirect:/puhui/collector/list.do";
     }
@@ -96,43 +100,86 @@ public class ConsumerController extends BaseController {
     }
 
     @RequestMapping("/add")
-    public String addTemplate(MultipartFile excel) throws IOException {
+    public String addTemplate(MultipartFile excel){
         System.out.println("success");
-        List<ConsumerTemplate> consumerTemplates = EasyExcel.read(excel.getInputStream()).head(ConsumerTemplate.class).sheet().doReadSync();
-
-
 
         ArrayList<ConsumerTemplate> defeats = new ArrayList<>();
         ArrayList<ConsumerTemplate> success = new ArrayList<>();
         ArrayList<ConsumerTemplate> updates = new ArrayList<>();
+        try {
+            List<ConsumerTemplate> consumerTemplates = EasyExcel.read(excel.getInputStream()).head(ConsumerTemplate.class).sheet().doReadSync();
+            for (ConsumerTemplate consumerTemplate : consumerTemplates) {
 
-        for (ConsumerTemplate consumerTemplate : consumerTemplates) {
+                ConsumerInfo consumerInfo = new ConsumerInfo();
 
-            ConsumerInfo consumerInfo = new ConsumerInfo();
+                BeanUtils.copyProperties(consumerTemplate,consumerInfo);
 
-            BeanUtils.copyProperties(consumerTemplate,consumerInfo);
+                boolean gender = "男".equals(consumerTemplate.getGender())?true:false;
 
-            boolean gender = "男".equals(consumerTemplate.getGender())?true:false;
+                consumerInfo.setGender(gender);
 
-            consumerInfo.setGender(gender);
+                if (StringUtils.isEmpty(consumerInfo.getPhone())){
+                    defeats.add(consumerTemplate);
+                }else {
+                    List<ConsumerInfo> consumerInfos = consumerService.selectByPhone(consumerInfo.getPhone());
+                    if (consumerInfo!=null && consumerInfos.size()>0){
+                        consumerInfo.setId(consumerInfos.get(0).getId());
+                        consumerInfo.setUpdateBy(loginUser.getId());
+                        if (consumerInfo.getStatus()!=null && consumerInfo.getStatus()==1){
+                            Integer update = consumerService.update(consumerInfo);
+                            if (update!=1){
+                                defeats.add(consumerTemplate);
+                            }else {
+                                updates.add(consumerTemplate);
+                            }
+                        }else {
+                            defeats.add(consumerTemplate);
+                        }
 
-            Integer save = consumerService.save(consumerInfo);
+                    }else {
+                        consumerInfo.setCreateBy(loginUser.getId());
+                        consumerInfo.setUpdateBy(loginUser.getId());
+                        Integer save = consumerService.save(consumerInfo);
+                        if (save!=1){
+                            defeats.add(consumerTemplate);
+                        }else {
+                            success.add(consumerTemplate);
+                        }
+                    }
+                }
 
-            if (save == 0){
-                updates.add(consumerTemplate);
-            }else if (save == 1){
-                success.add(consumerTemplate);
-            }else {
-                defeats.add(consumerTemplate);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         request.setAttribute("success",success);
         request.setAttribute("defeats",defeats);
         request.setAttribute("updates",updates);
-
+        System.out.println("return");
         return "consumer/collector/consumer-after-upload";
     }
 
+    @RequestMapping("/submit")
+    public String submit(@RequestParam("ids") List<String> ids){
+
+        for (String id : ids) {
+            consumerService.updateStatus(id,2);
+        }
+        return "redirect:/puhui/collector/list.do";
+    }
+
+    @RequestMapping("/search")
+    public String search(@RequestParam(defaultValue = "1") Integer status , @RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size,@RequestParam("kw") String kw){
+
+        PageInfo<ConsumerInfo> consumerInfoPageInfo = consumerService.selectByKw(status, page, size, kw);
+
+        request.setAttribute("page" , consumerInfoPageInfo);
+
+        request.setAttribute("kw",kw);
+
+        return "redirect:/puhui/collector/list.do";
+
+    }
 
 }

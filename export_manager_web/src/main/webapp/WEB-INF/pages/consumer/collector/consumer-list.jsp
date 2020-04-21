@@ -21,11 +21,45 @@
         var id = getCheckId();//动态获得当前选中的id值
         if(id) {
             if(confirm("你确认要删除此条记录吗？")) {
-                location.href="/company/delete.do?id="+id;
+                location.href="/puhui/collector/delete.do?id="+id;
             }
         }else{
             alert("请勾选待处理的记录，且每次只能勾选一个")
         }
+    }
+    function submitToCall() {
+
+            var idNodes = document.getElementsByName("ids")
+            var ids = [];
+            for(var i=0;i<idNodes.length;i++){
+                if(idNodes[i].checked){
+                    ids.push(idNodes[i].value)
+                }
+            }
+            if(ids.length<=0){
+                alert("请勾选待处理的记录")
+            }else {
+                if(confirm("您是否确定提交？")) {
+                    location.href="/puhui/collector/submit.do?ids="+ids;
+                }
+            }
+    }
+    function search() {
+        location.href="/puhui/collector/search.do?kw="+$("#searchInput").val;
+    }
+    function checkAll() {
+        var idNodes = document.getElementsByName("ids");
+        var node = document.getElementById("checkAll");
+        if(!node.checked){
+            for(var i=0;i<idNodes.length;i++){
+                idNodes[i].checked=true;
+            }
+        }else {
+            for(var i=0;i<idNodes.length;i++){
+                idNodes[i].checked=!idNodes[i].checked;
+            }
+        }
+
     }
 </script>
 <body>
@@ -61,14 +95,20 @@
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default" title="新建" onclick='location.href="/puhui/collector/toAdd.do"'><i class="fa fa-file-o"></i> 新建</button>
                                 <button type="button" class="btn btn-default" title="删除" onclick='deleteById()'><i class="fa fa-trash-o"></i> 删除</button>
+                                <button type="button" class="btn btn-default" title="提交" onclick='submitToCall()'><i class="fa fa-trash-o"></i> 提交</button>
                                 <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i class="fa fa-refresh"></i> 刷新</button>
                             </div>
                         </div>
                     </div>
                     <div class="box-tools pull-right">
                         <div class="has-feedback">
-                            <input type="text" class="form-control input-sm" placeholder="搜索">
-                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                            <c:if test="${kw!=null}">
+                                <input type="text" id="searchInput" value="${kw}" class="form-control input-sm" placeholder="搜索">
+                            </c:if>
+                            <c:if test="${kw==null}">
+                                <input type="text" id="searchInput" class="form-control input-sm" placeholder="搜索">
+                            </c:if>
+                            <span class="glyphicon glyphicon-search form-control-feedback" onclick="search()"></span>
                         </div>
                     </div>
                     <!--工具栏/-->
@@ -77,7 +117,9 @@
                     <table id="dataList" class="table table-bordered table-striped table-hover dataTable">
                         <thead>
                         <tr>
-                            <th class="" style="padding-right:0px;"></th>
+                            <th class="" style="padding-right:0px;">
+                                <input id="checkAll" type="checkbox" onclick="checkAll()">
+                            </th>
                             <th class="sorting">名字</th>
                             <th class="sorting">性别</th>
                             <th class="sorting">年龄</th>
@@ -113,7 +155,7 @@
 
                 <div class="box-footer">
                     <jsp:include page="../../common/page.jsp">
-                        <jsp:param value="${ctx}/company/list.do" name="pageUrl"/>
+                        <jsp:param value="${ctx}/puhui/collector/list.do" name="pageUrl"/>
                     </jsp:include>
                 </div>
                 <!-- /.box-footer-->
