@@ -21,16 +21,16 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Autowired
     private ConsumerDao consumerDao;
 
-    @Override
-    public PageInfo<ConsumerInfo> selectByStatus(Integer status, Integer page, Integer size) {
 
+    @Override
+    public PageInfo<ConsumerInfo> selectByStatus(List<Integer> statuses, Integer page, Integer size) {
         PageHelper.startPage(page,size);
 
         ConsumerInfoExample consumerInfoExample = new ConsumerInfoExample();
 
         ConsumerInfoExample.Criteria criteria = consumerInfoExample.createCriteria();
 
-        criteria.andStatusEqualTo(status);
+        criteria.andStatusIn(statuses);
 
         List<ConsumerInfo> consumerInfos = consumerDao.selectByExample(consumerInfoExample);
 
@@ -38,7 +38,6 @@ public class ConsumerServiceImpl implements ConsumerService {
 
         return consumerInfoPageInfo;
     }
-
 
 
     @Override
@@ -106,20 +105,6 @@ public class ConsumerServiceImpl implements ConsumerService {
         }
     }
 
-    @Override
-    public void updateStatus(String id, Integer status) {
-
-        try {
-            ConsumerInfo consumerInfo = consumerDao.selectByPrimaryKey(id);
-
-            consumerInfo.setStatus(status);
-
-            consumerDao.updateByPrimaryKey(consumerInfo);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 
     @Override
     public PageInfo<ConsumerInfo> selectByKw(Integer status, Integer page, Integer size,String kw) {

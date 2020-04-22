@@ -22,32 +22,90 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Controller
-@RequestMapping("/puhui/collector")
+@RequestMapping("/puhui")
 public class ConsumerController extends BaseController {
     @Autowired
     private ConsumerService consumerService;
 
-    @RequestMapping("/list")
-    public String list(@RequestParam(defaultValue = "1") Integer status , @RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size){
-        PageInfo<ConsumerInfo> consumerInfoPageInfo = consumerService.selectByStatus(status, page, size);
-        request.setAttribute("page" , consumerInfoPageInfo);
-        request.setAttribute("kw",null);
+    /**
+     * 收集专员看到的客户列表
+     *
+     * @param page
+     * @param size
+     * @return
+     */
+    @RequestMapping("/collector/list")
+    public String collectorList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "3") Integer size) {
+        List<Integer> integers = new ArrayList<>();
+        integers.add(1);
+        integers.add(7);
+        PageInfo<ConsumerInfo> consumerInfoPageInfo = consumerService.selectByStatus(integers, page, size);
+        request.setAttribute("page", consumerInfoPageInfo);
+        request.setAttribute("kw", null);
         return "consumer/collector/consumer-list";
     }
 
-    @RequestMapping("/toAdd")
+    /**
+     * 外呼专员看到的列表
+     * @param page
+     * @param size
+     * @return
+     */
+    @RequestMapping("/caller/list")
+    public String callerList(@RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size){
+        List<Integer> integers = new ArrayList<>();
+        integers.add(2);
+        integers.add(3);
+        PageInfo<ConsumerInfo> consumerInfoPageInfo = consumerService.selectByStatus(integers, page, size);
+        request.setAttribute("page" , consumerInfoPageInfo);
+        request.setAttribute("kw",null);
+        return "consumer/caller/caller-list";
+    }
+    /**
+     * 客户经理看到的列表
+     * @param page
+     * @param size
+     * @return
+     */
+    @RequestMapping("/manager/list")
+    public String managerList(@RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size){
+        List<Integer> integers = new ArrayList<>();
+        integers.add(2);
+        integers.add(3);
+        PageInfo<ConsumerInfo> consumerInfoPageInfo = consumerService.selectByStatus(integers, page, size);
+        request.setAttribute("page" , consumerInfoPageInfo);
+        request.setAttribute("kw",null);
+        return "consumer/manager/manager-list";
+    }
+
+    /**
+     * 客户添加页面
+     * @return
+     */
+    @RequestMapping("/collector/toAdd")
     public String toAdd(){
         return "consumer/collector/consumer-add";
     }
 
-    @RequestMapping("/toUpdate")
+    /**
+     * 客户更新页面
+     * @param id
+     * @return
+     */
+    @RequestMapping("/collector/toUpdate")
     public String toUpdate(@RequestParam("id") String id){
         ConsumerInfo consumerInfo = consumerService.selectById(id);
         request.setAttribute("consumer",consumerInfo);
         return "consumer/collector/consumer-update";
     }
 
-    @RequestMapping("/getTemplate")
+    /**
+     * 获取客户信息上传模板
+     * @param status
+     * @param page
+     * @param size
+     */
+    @RequestMapping("/collector/getTemplate")
     public void getTemplate(@RequestParam(defaultValue = "1") Integer status , @RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size){
         try {
             response.setContentType("application/vnd.ms-excel");
@@ -61,7 +119,12 @@ public class ConsumerController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/edit")
+    /**
+     * 客户信息保存/更新
+     * @param consumerInfo
+     * @return
+     */
+    @RequestMapping(value = "/collector/edit")
     public String edit(ConsumerInfo consumerInfo){
         if(StringUtils.isEmpty(consumerInfo.getId())){//判断id是否存在
             consumerInfo.setCreateBy(loginUser.getId());
@@ -70,6 +133,9 @@ public class ConsumerController extends BaseController {
             consumerService.save(consumerInfo);
         }else{
             if (!StringUtils.isEmpty(consumerInfo.getPhone())){
+                List<Integer> integers = new ArrayList<>();
+                integers.add(1);
+                integers.add(7);
                 List<ConsumerInfo> consumerInfos = consumerService.selectByPhone(consumerInfo.getPhone());
                 if (consumerInfo!=null && consumerInfos.size()>0){
                     consumerInfo.setId(consumerInfos.get(0).getId());
@@ -82,7 +148,12 @@ public class ConsumerController extends BaseController {
         return "redirect:/puhui/collector/list.do";
     }
 
-    @RequestMapping("/deleteOne")
+    /**
+     * 客户信息删除
+     * @param id
+     * @return
+     */
+    @RequestMapping("/collector/deleteOne")
     public String delete(String id){
 
         Integer delete = consumerService.delete(id);
@@ -94,12 +165,21 @@ public class ConsumerController extends BaseController {
         return "redirect:/puhui/collector/list.do";
     }
 
-    @RequestMapping("/upload")
+    /**
+     * 客户信息批量上传页面
+     * @return
+     */
+    @RequestMapping("/collector/upload")
     public String upload(){
         return "consumer/collector/consumer-upload";
     }
 
-    @RequestMapping("/add")
+    /**
+     *  客户信息批量功能
+     * @param excel
+     * @return
+     */
+    @RequestMapping("/collector/add")
     public String addTemplate(MultipartFile excel){
         System.out.println("success");
 
@@ -121,11 +201,12 @@ public class ConsumerController extends BaseController {
                 if (StringUtils.isEmpty(consumerInfo.getPhone())){
                     defeats.add(consumerTemplate);
                 }else {
+                    List<Integer> integers = new ArrayList<>();
                     List<ConsumerInfo> consumerInfos = consumerService.selectByPhone(consumerInfo.getPhone());
                     if (consumerInfo!=null && consumerInfos.size()>0){
                         consumerInfo.setId(consumerInfos.get(0).getId());
                         consumerInfo.setUpdateBy(loginUser.getId());
-                        if (consumerInfo.getStatus()!=null && consumerInfo.getStatus()==1){
+                        if (consumerInfo.getStatus()!=null && (consumerInfo.getStatus()==1 || consumerInfo.getStatus()==7)){
                             Integer update = consumerService.update(consumerInfo);
                             if (update!=1){
                                 defeats.add(consumerTemplate);
@@ -160,16 +241,70 @@ public class ConsumerController extends BaseController {
         return "consumer/collector/consumer-after-upload";
     }
 
-    @RequestMapping("/submit")
-    public String submit(@RequestParam("ids") List<String> ids){
+    /**
+     * 收集专员信息提交
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/collector/submit")
+    public String collectorSubmit(@RequestParam("ids") List<String> ids){
 
         for (String id : ids) {
-            consumerService.updateStatus(id,2);
+            ConsumerInfo consumerInfo = new ConsumerInfo();
+            consumerInfo.setId(id);
+            consumerInfo.setStatus(2);
+            consumerService.update(consumerInfo);
         }
         return "redirect:/puhui/collector/list.do";
     }
 
-    @RequestMapping("/search")
+    /**
+     * 外呼专员信息提交给客户经理
+     * 外呼专员呼不通的客户回退给收集员
+     * 外呼专员标记外呼暂无意向的客户
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/caller/change")
+    public String callerSubmit(@RequestParam("ids") List<String> ids,@RequestParam("status") Integer status){
+
+        for (String id : ids) {
+            ConsumerInfo consumerInfo = new ConsumerInfo();
+            consumerInfo.setId(id);
+            consumerInfo.setStatus(status);
+            consumerService.update(consumerInfo);
+        }
+        return "redirect:/puhui/caller/list.do";
+    }
+
+    /**
+     * 外呼专员信息提交给客户经理
+     * 外呼专员呼不通的客户回退给收集员
+     * 外呼专员标记外呼暂无意向的客户
+     * @param ids
+     * @return
+     */
+    @RequestMapping("/manager/change")
+    public String managerSubmit(@RequestParam("ids") List<String> ids,@RequestParam("status") Integer status){
+
+        for (String id : ids) {
+            ConsumerInfo consumerInfo = new ConsumerInfo();
+            consumerInfo.setId(id);
+            consumerInfo.setStatus(status);
+            consumerService.update(consumerInfo);
+        }
+        return "redirect:/puhui/manager/list.do";
+    }
+
+    /**
+     * 根据姓名跟手机号进行模糊查询
+     * @param status
+     * @param page
+     * @param size
+     * @param kw
+     * @return
+     */
+    @RequestMapping("/collector/search")
     public String search(@RequestParam(defaultValue = "1") Integer status , @RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size,@RequestParam("kw") String kw){
 
         PageInfo<ConsumerInfo> consumerInfoPageInfo = consumerService.selectByKw(status, page, size, kw);
@@ -181,5 +316,6 @@ public class ConsumerController extends BaseController {
         return "redirect:/puhui/collector/list.do";
 
     }
+
 
 }

@@ -6,7 +6,8 @@ import com.itheima.domain.consumer.ConsumerInfo;
 import java.util.List;
 
 public interface ConsumerService {
-    PageInfo<ConsumerInfo> selectByStatus(Integer status, Integer page, Integer size);
+
+    PageInfo<ConsumerInfo> selectByStatus(List<Integer> statuses,Integer page,Integer size);
 
     Integer save(ConsumerInfo consumerInfo);
 
@@ -17,8 +18,6 @@ public interface ConsumerService {
     ConsumerInfo selectById(String id);
 
     List<ConsumerInfo> selectByPhone(String phone);
-
-    void updateStatus(String id, Integer status);
 
     PageInfo<ConsumerInfo> selectByKw(Integer status, Integer page, Integer size,String kw);
 }
