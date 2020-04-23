@@ -4,7 +4,7 @@
         <span class="logo-mini"><img src="../img/logo.png"></span>
         <span class="logo-lg">
                     <img src="../img/export.png">
-                    <i> SaaS外贸进出口平台</i>
+                    <i> SaaS云平台</i>
                 </span>
     </a>
 

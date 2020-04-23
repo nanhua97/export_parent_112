@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -196,15 +197,27 @@ public class ConsumerController extends BaseController {
 
                 consumerInfo.setGender(gender);
 
+                System.out.println(consumerInfo);
+
                 if (StringUtils.isEmpty(consumerInfo.getPhone())){
                     defeats.add(consumerTemplate);
                 }else {
                     List<Integer> integers = new ArrayList<>();
                     List<ConsumerInfo> consumerInfos = consumerService.selectByPhone(consumerInfo.getPhone());
                     if (consumerInfo!=null && consumerInfos.size()>0){
-                        consumerInfo.setId(consumerInfos.get(0).getId());
+
+                        ConsumerInfo consumerInfo1 = consumerInfos.get(0);
+
+                        consumerInfo.setId(consumerInfo1.getId());
+                        consumerInfo.setCreateTime(consumerInfo1.getCreateTime());
+                        consumerInfo.setStatus(consumerInfo1.getStatus());
+                        consumerInfo.setCreateBy(consumerInfo1.getCreateBy());
                         consumerInfo.setUpdateBy(loginUser.getId());
-                        if (consumerInfo.getStatus()!=null && (consumerInfo.getStatus()==1 || consumerInfo.getStatus()==7)){
+                        consumerInfo.setUpdateTime(new Date());
+
+
+                        if (consumerInfo1.getStatus()==1 || consumerInfo1.getStatus()==7){
+
                             Integer update = consumerService.update(consumerInfo);
                             if (update!=1){
                                 defeats.add(consumerTemplate);
@@ -235,7 +248,6 @@ public class ConsumerController extends BaseController {
         request.setAttribute("success",success);
         request.setAttribute("defeats",defeats);
         request.setAttribute("updates",updates);
-        System.out.println("return");
         return "consumer/collector/consumer-after-upload";
     }
 

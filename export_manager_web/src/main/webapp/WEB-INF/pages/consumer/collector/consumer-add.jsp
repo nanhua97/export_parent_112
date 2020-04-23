@@ -115,7 +115,7 @@
                     </table>
 
                     <div class="pull-left">
-                        数据更新记录,共${update.size()}条
+                        数据更新记录,共${updates.size()}条
                     </div>
 
                     <!--数据列表-->
@@ -132,9 +132,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${update}" var="item">
+                        <c:forEach items="${updates}" var="item">
                             <tr>
-                                <td><input name="ids" value="${item.id}" type="checkbox"></td>
                                 <td>${item.name}</td>
                                 <td>${item.gender}</td>
                                 <td>${item.age}</td>
@@ -147,19 +146,6 @@
                     </table>
 
                 </div>
-            </div>
-            <!-- /.box-body -->
-
-            <!-- .box-footer-->
-            <div class="box-footer">
-
-                <div class="box-footer">
-                    <jsp:include page="../../common/page.jsp">
-                        <jsp:param value="${ctx}/company/list.do" name="pageUrl"/>
-                    </jsp:include>
-                </div>
-                <!-- /.box-footer-->
-
             </div>
         </div>
     </section>

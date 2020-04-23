@@ -131,7 +131,6 @@
                     <table class="table table-bordered table-striped table-hover dataTable">
                         <thead>
                         <tr>
-                            <th class="" style="padding-right:0px;"></th>
                             <th class="sorting">名字</th>
                             <th class="sorting">性别</th>
                             <th class="sorting">年龄</th>
@@ -141,9 +140,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${update}" var="item">
+                        <c:forEach items="${updates}" var="item">
                             <tr>
-                                <td><input name="ids" value="${item.id}" type="checkbox"></td>
                                 <td>${item.name}</td>
                                 <td>${item.gender}</td>
                                 <td>${item.age}</td>

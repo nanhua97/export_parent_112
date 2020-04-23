@@ -25,7 +25,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="all-admin-index.html">SaaS外贸出口云平台</a>
+        <a href="all-admin-index.html">SaaS云平台</a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
@@ -50,11 +50,11 @@
                 </div>
             </div>
         </form>
-        <div class="social-auth-links text-center">
+        <%--<div class="social-auth-links text-center">
             <p>- 或者 -</p>
             <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-qq"></i> 腾讯QQ用户登录</a>
             <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-weixin"></i> 微信用户登录</a>
-        </div>
+        </div>--%>
     </div>
 </div>
 <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
