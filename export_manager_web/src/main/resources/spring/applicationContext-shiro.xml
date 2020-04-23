@@ -68,11 +68,13 @@
                 /**  表示 当前目录 及其子目录下的文件
             -->
             <value>
-                <!--/system/module/list.do = perms["模块管理"]
-                 /system/module/list.do = perms["模块管理"]
-                 /system/module/** = perms["模块管理" ,"新增模块" , "修改模块" , "删除模块"]
-                 /company/list.do = perms["企业管理"]-->
-
+                /system/module/list.do = perms["模块管理"]
+                /system/module/list.do = perms["模块管理"]
+                /system/module/** = perms["模块管理" ,"新增模块" , "修改模块" , "删除模块"]
+                /company/list.do = perms["企业管理"]
+                /puhui/collector/** = perms["上传数据管理"]
+                /puhui/caller/** = perms["外呼记录管理"]
+                /puhui/manager/** = perms["客户管理"]
                 /index.jsp* = anon
                 /login.jsp* = anon
                 /login* = anon

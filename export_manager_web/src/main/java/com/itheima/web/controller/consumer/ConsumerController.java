@@ -1,6 +1,5 @@
 package com.itheima.web.controller.consumer;
 
-import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageInfo;
 import com.itheima.domain.consumer.ConsumerInfo;
@@ -17,9 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.function.Consumer;
 
 @Controller
 @RequestMapping("/puhui")
@@ -35,7 +32,7 @@ public class ConsumerController extends BaseController {
      * @return
      */
     @RequestMapping("/collector/list")
-    public String collectorList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "3") Integer size) {
+    public String collectorList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer size) {
         List<Integer> integers = new ArrayList<>();
         integers.add(1);
         integers.add(7);
@@ -52,7 +49,7 @@ public class ConsumerController extends BaseController {
      * @return
      */
     @RequestMapping("/caller/list")
-    public String callerList(@RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size){
+    public String callerList(@RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "10") Integer size){
         List<Integer> integers = new ArrayList<>();
         integers.add(2);
         integers.add(3);
@@ -68,10 +65,11 @@ public class ConsumerController extends BaseController {
      * @return
      */
     @RequestMapping("/manager/list")
-    public String managerList(@RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size){
+    public String managerList(@RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "10") Integer size){
         List<Integer> integers = new ArrayList<>();
-        integers.add(2);
-        integers.add(3);
+        integers.add(4);
+        integers.add(6);
+        integers.add(8);
         PageInfo<ConsumerInfo> consumerInfoPageInfo = consumerService.selectByStatus(integers, page, size);
         request.setAttribute("page" , consumerInfoPageInfo);
         request.setAttribute("kw",null);
@@ -250,10 +248,7 @@ public class ConsumerController extends BaseController {
     public String collectorSubmit(@RequestParam("ids") List<String> ids){
 
         for (String id : ids) {
-            ConsumerInfo consumerInfo = new ConsumerInfo();
-            consumerInfo.setId(id);
-            consumerInfo.setStatus(2);
-            consumerService.update(consumerInfo);
+            consumerService.updateStatus(id,2,loginUser.getId());
         }
         return "redirect:/puhui/collector/list.do";
     }
@@ -269,10 +264,7 @@ public class ConsumerController extends BaseController {
     public String callerSubmit(@RequestParam("ids") List<String> ids,@RequestParam("status") Integer status){
 
         for (String id : ids) {
-            ConsumerInfo consumerInfo = new ConsumerInfo();
-            consumerInfo.setId(id);
-            consumerInfo.setStatus(status);
-            consumerService.update(consumerInfo);
+            consumerService.updateStatus(id,status,loginUser.getId());
         }
         return "redirect:/puhui/caller/list.do";
     }
@@ -288,10 +280,7 @@ public class ConsumerController extends BaseController {
     public String managerSubmit(@RequestParam("ids") List<String> ids,@RequestParam("status") Integer status){
 
         for (String id : ids) {
-            ConsumerInfo consumerInfo = new ConsumerInfo();
-            consumerInfo.setId(id);
-            consumerInfo.setStatus(status);
-            consumerService.update(consumerInfo);
+            consumerService.updateStatus(id,status,loginUser.getId());
         }
         return "redirect:/puhui/manager/list.do";
     }
@@ -305,7 +294,7 @@ public class ConsumerController extends BaseController {
      * @return
      */
     @RequestMapping("/collector/search")
-    public String search(@RequestParam(defaultValue = "1") Integer status , @RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "3") Integer size,@RequestParam("kw") String kw){
+    public String search(@RequestParam(defaultValue = "1") Integer status , @RequestParam(defaultValue = "1") Integer page , @RequestParam(defaultValue = "10") Integer size,@RequestParam("kw") String kw){
 
         PageInfo<ConsumerInfo> consumerInfoPageInfo = consumerService.selectByKw(status, page, size, kw);
 

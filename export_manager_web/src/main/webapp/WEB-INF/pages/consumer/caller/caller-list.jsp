@@ -8,9 +8,9 @@
     <!-- 页面meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>数据 - AdminLTE2定制版</title>
-    <meta name="description" content="AdminLTE2定制版">
-    <meta name="keywords" content="AdminLTE2定制版">
+    <title>Saas-普惠金融</title>
+    <meta name="description" content="Saas-普惠金融">
+    <meta name="keywords" content="Saas-普惠金融">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
     <!-- 页面meta /-->
@@ -45,11 +45,29 @@
         if(ids.length<=0){
             alert("请勾选意向客户")
         }else {
-            if(confirm("您是否确定提交？")) {
+            if(confirm("是否将意向用户提交给客户经理？")) {
                 location.href="/puhui/caller/change.do?ids="+ids+"&status="+4;
             }
         }
     }
+    
+    function shelve() {
+        var idNodes = document.getElementsByName("ids")
+        var ids = [];
+        for(var i=0;i<idNodes.length;i++){
+            if(idNodes[i].checked){
+                ids.push(idNodes[i].value)
+            }
+        }
+        if(ids.length<=0){
+            alert("请勾选搁置记录")
+        }else {
+            if(confirm("您是否确定提交？")) {
+                location.href="/puhui/caller/change.do?ids="+ids+"&status="+3;
+            }
+        }
+    }
+    
     function search() {
         location.href="/puhui/collector/search.do?kw="+$("#searchInput").val;
     }
@@ -99,8 +117,9 @@
                     <div class="pull-left">
                         <div class="form-group form-inline">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default" title="回退给收集员" onclick='cancleById()'><i class="fa fa-trash-o"></i> 回退</button>
-                                <button type="button" class="btn btn-default" title="提交给客户经理" onclick='submitToManager()'><i class="fa fa-trash-o"></i> 提交</button>
+                                <button type="button" class="btn btn-default" title="回退给收集员" onclick='cancleById()'><i class="fa fa-chevron-left"></i> 回退</button>
+                                <button type="button" class="btn btn-default" title="搁置无意向客户" onclick='shelve()'><i class="fa fa-stop"></i> 搁置</button>
+                                <button type="button" class="btn btn-default" title="提交给客户经理" onclick='submitToManager()'><i class="fa fa-window-restore"></i> 提交</button>
                                 <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i class="fa fa-refresh"></i> 刷新</button>
                             </div>
                         </div>
@@ -146,12 +165,10 @@
                                 <td>${item.prefessor}</td>
                                 <td class="text-center">
                                     <c:if test="${item.status==2}">
-                                        <button type="button" class="btn bg-olive btn-xs" onclick='location.href="/puhui/caller/change.do?ids=${item.id}&status=3"'>
-                                            未外呼
-                                        </button>
+                                        未外呼
                                     </c:if>
                                     <c:if test="${item.status==3}">
-                                        <font color="green">外呼(无意向客户)</font>
+                                        <font color="green">已外呼(暂无意向)</font>
                                     </c:if>
                                 </td>
                             </tr>
@@ -167,7 +184,7 @@
 
                 <div class="box-footer">
                     <jsp:include page="../../common/page.jsp">
-                        <jsp:param value="${ctx}/puhui/collector/list.do" name="pageUrl"/>
+                        <jsp:param value="${ctx}/puhui/caller/list.do" name="pageUrl"/>
                     </jsp:include>
                 </div>
                 <!-- /.box-footer-->

@@ -129,4 +129,12 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     }
 
+    @Override
+    public void updateStatus(String id, Integer status,String updateBy) {
+        ConsumerInfo consumerInfo = consumerDao.selectByPrimaryKey(id);
+        consumerInfo.setStatus(status);
+        consumerInfo.setUpdateBy(updateBy);
+        consumerDao.updateByPrimaryKey(consumerInfo);
+    }
+
 }

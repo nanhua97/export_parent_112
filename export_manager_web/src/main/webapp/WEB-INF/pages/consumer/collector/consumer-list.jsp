@@ -8,9 +8,9 @@
     <!-- 页面meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>数据 - AdminLTE2定制版</title>
-    <meta name="description" content="AdminLTE2定制版">
-    <meta name="keywords" content="AdminLTE2定制版">
+    <title>Saas-普惠金融</title>
+    <meta name="description" content="Saas-普惠金融">
+    <meta name="keywords" content="Saas-普惠金融">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
     <!-- 页面meta /-->
@@ -140,7 +140,12 @@
                                 <td>${item.email}</td>
                                 <td>${item.prefessor}</td>
                                 <td class="text-center">
-                                    <button type="button" class="btn bg-olive btn-xs" onclick='location.href="/puhui/collector/toUpdate.do?id=${item.id}"'>编辑</button>
+                                    <c:if test="${item.status==1}">
+                                        <button type="button" class="btn bg-olive btn-xs" onclick='location.href="/puhui/collector/toUpdate.do?id=${item.id}"'>编辑</button>
+                                    </c:if>
+                                    <c:if test="${item.status==7}">
+                                        <button type="button" class="btn bg-olive btn-xs" style="background-color: red" onclick='location.href="/puhui/collector/toUpdate.do?id=${item.id}"'>编辑</button>
+                                    </c:if>
                                 </td>
                             </tr>
                         </c:forEach>

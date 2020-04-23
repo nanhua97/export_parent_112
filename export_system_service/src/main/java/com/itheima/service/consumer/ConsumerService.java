@@ -20,4 +20,6 @@ public interface ConsumerService {
     List<ConsumerInfo> selectByPhone(String phone);
 
     PageInfo<ConsumerInfo> selectByKw(Integer status, Integer page, Integer size,String kw);
+
+    void updateStatus(String id, Integer status,String updateBy);
 }

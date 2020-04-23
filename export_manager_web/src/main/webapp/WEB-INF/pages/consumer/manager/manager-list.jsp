@@ -8,9 +8,9 @@
     <!-- 页面meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>数据 - AdminLTE2定制版</title>
-    <meta name="description" content="AdminLTE2定制版">
-    <meta name="keywords" content="AdminLTE2定制版">
+    <title>Saas-普惠金融</title>
+    <meta name="description" content="Saas-普惠金融">
+    <meta name="keywords" content="Saas-普惠金融">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
     <!-- 页面meta /-->
@@ -29,7 +29,7 @@
             alert("请勾选成交记录")
         }else {
             if(confirm("是否确定提交？")) {
-                location.href="/puhui/caller/change.do?ids="+ids+"&status="+6;
+                location.href="/puhui/manager/change.do?ids="+ids+"&status="+8;
             }
         }
     }
@@ -47,7 +47,7 @@
             alert("请勾选搁置记录")
         }else {
             if(confirm("您是否确定提交？")) {
-                location.href="/puhui/caller/change.do?ids="+ids+"&status="+8;
+                location.href="/puhui/manager/change.do?ids="+ids+"&status="+6;
             }
         }
     }
@@ -100,9 +100,9 @@
                     <div class="pull-left">
                         <div class="form-group form-inline">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default" title="搁置" onclick="shelve()"><i class="fa fa-refresh"></i> 搁置</button>
-                                <button type="button" class="btn btn-default" title="成交" onclick="turnover()"><i class="fa fa-trash-o"></i> 成交</button>
-                                <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i class="fa fa-trash-o"></i> 成交</button>
+                                <button type="button" class="btn btn-default" title="搁置" onclick="shelve()"><i class="fa fa-stop"></i> 搁置</button>
+                                <button type="button" class="btn btn-default" title="成交" onclick="turnover()"><i class="fa fa-check"></i> 成交</button>
+                                <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i class="fa fa-refresh"></i> 刷新</button>
                             </div>
                         </div>
                     </div>
@@ -150,7 +150,7 @@
                                         未回访
                                     </c:if>
                                     <c:if test="${item.status==6}">
-                                        <font color="green">搁置</font>
+                                        <font color="red">搁置</font>
                                     </c:if>
                                     <c:if test="${item.status==8}">
                                         <font color="green">达成交易</font>
@@ -169,7 +169,7 @@
 
                 <div class="box-footer">
                     <jsp:include page="../../common/page.jsp">
-                        <jsp:param value="${ctx}/puhui/collector/list.do" name="pageUrl"/>
+                        <jsp:param value="${ctx}/puhui/manager/list.do" name="pageUrl"/>
                     </jsp:include>
                 </div>
                 <!-- /.box-footer-->
