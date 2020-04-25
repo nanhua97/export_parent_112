@@ -10,7 +10,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<!--扫包-->
-	<context:component-scan base-package="com.itheima.web"></context:component-scan>
+	<context:component-scan base-package="demo.web"></context:component-scan>
 	<!--开启注解的支持-->
 	<mvc:annotation-driven conversion-service="conversionService"></mvc:annotation-driven>
 	<!--视图解析器-->
@@ -20,14 +20,14 @@
 	</bean>
 
 	<!--异常处理器-->
-	<bean  class="com.itheima.web.exception.MyException"></bean>
+	<bean  class="demo.web.exception.MyException"></bean>
 
 	<!--初始化容器的时候已经有了-->
 	<!--配置转换器-->
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<!--多个转换器-->
 		<property name="converters">
-			<bean class="com.itheima.web.converter.MyStringToDateConverter"></bean>
+			<bean class="demo.web.converter.MyStringToDateConverter"></bean>
 		</property>
 	</bean>
 

@@ -1,7 +1,7 @@
 package com.itheima.test;
 
-import com.itheima.domain.company.Company;
-import com.itheima.service.company.CompanyService;
+import demo.domain.company.Company;
+import demo.service.company.CompanyService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

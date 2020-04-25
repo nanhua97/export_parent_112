@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="demo.dao.system.DeptDao">
+
+    <!--
+     <association property=" 赋值到哪个属性中" javaType="封装的数据类型"
+     select="定义到哪个sql语句查询数据" column="传入什么参数 数据库的字段"
+     ></association>一对一
+    -->
+    <resultMap id="BaseResultMap" type="demo.domain.system.Dept">
+        <id column="dept_id" property="id"></id>
+        <result column="dept_name" property="deptName"></result>
+
+        <result column="state" property="state"></result>
+        <result column="company_id" property="companyId"></result>
+        <result column="company_name" property="companyName"></result>
+        <!-- <result column="parent_id" property="parentId"></result>-->
+        <!--配置外键关系-->
+        <association property="parent" javaType="demo.domain.system.Dept"
+                     select="demo.dao.system.DeptDao.findById" column="parent_id"></association>
+
+    </resultMap>
+    <!--
+    //根据企业id查询部门列表数据
+    List<Dept> findAll(String companyId);
+    -->
+  <select id="findAll" resultMap="BaseResultMap">
+    select * from pe_dept where company_id = #{companyId}
+  </select>
+
+
+    <!--根据id查询部门对象
+    Dept findById(String id);
+    -->
+    <select id="findById" resultMap="BaseResultMap">
+    select * from pe_dept where dept_id = #{id}
+  </select>
+
+    <!--
+        //保存部门
+    void save(Dept dept);
+     #{实体类中的属性字段}  #{parent.id} #{id 当前的id}
+    -->
+
+    <insert id="save" parameterType="demo.domain.system.Dept">
+        insert into pe_dept
+        (
+          dept_id,dept_name,parent_id,state,company_id,company_name
+        )
+        values
+        (
+          #{id},#{deptName},#{parent.id},#{state},#{companyId},#{companyName}
+        )
+    </insert>
+
+    <!--
+       //修改部门
+    void update(Dept dept);
+    -->
+    <update id="update" parameterType="demo.domain.system.Dept">
+        update pe_dept set
+            dept_name=#{deptName},
+            parent_id=#{parent.id},
+            state=#{state},
+            company_id=#{companyId},
+            company_name=#{companyName}
+          where dept_id=#{id}
+    </update>
+    <!--
+        //根据id删除部门
+    void delete(String id);
+    -->
+    <delete id="delete" parameterType="string">
+        delete from pe_dept where dept_id = #{id}
+    </delete>
+</mapper>

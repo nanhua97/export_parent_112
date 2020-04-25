@@ -1,7 +1,7 @@
 package com.itheima.test;
 
-import com.itheima.dao.company.CompanyDao;
-import com.itheima.domain.company.Company;
+import demo.dao.company.CompanyDao;
+import demo.domain.company.Company;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

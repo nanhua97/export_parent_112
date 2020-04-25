@@ -44,13 +44,13 @@
     <bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"></bean>
 
     <!-- 自定义Realm域的编写 -->
-    <bean id="authRealm" class="com.itheima.web.shiro.AuthRealm">
+    <bean id="authRealm" class="demo.web.shiro.AuthRealm">
         <!-- 注入自定义的密码比较器 -->
         <property name="credentialsMatcher" ref="customerCredentialsMatcher" ></property>
     </bean>
 
     <!-- 自定义的密码比较器 -->
-    <bean id="customerCredentialsMatcher" class="com.itheima.web.shiro.CustomCredentialsMatcher"></bean>
+    <bean id="customerCredentialsMatcher" class="demo.web.shiro.CustomCredentialsMatcher"></bean>
 
     <!-- filter-name这个名字的值来自于web.xml中filter的名字 -->
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
@@ -69,8 +69,7 @@
             -->
             <value>
                 /system/module/list.do = perms["模块管理"]
-                /system/module/list.do = perms["模块管理"]
-                /system/module/** = perms["模块管理" ,"新增模块" , "修改模块" , "删除模块"]
+                /system/module/** = perms["系统管理"]
                 /company/list.do = perms["企业管理"]
                 /puhui/collector/** = perms["上传数据管理"]
                 /puhui/caller/** = perms["外呼记录管理"]
